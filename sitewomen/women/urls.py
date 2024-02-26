@@ -12,4 +12,5 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('category/<slug:cat_slug>/', views.show_category, name='category'),
     path('post/<slug:post_slug>/', views.show_post, name='post'),
+    path('tag/<slug:tag_slug>/', views.show_tag_postlist, name='tag'),
 ]

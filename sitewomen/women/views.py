@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
-from .models import Women, Category
+from .models import Women, Category, TagPost
 
 menu = [
     {'title': 'О сайте', 'url_name': "about"},
@@ -47,7 +47,20 @@ def show_category(request, cat_slug):
             'cat_selected': category.pk,
             }
     return render(request, 'women/index.html', context = data)
+    return render(request, 'women/index.html', context = data)
 
+def show_tag_postlist(request, tag_slug):
+    # прочитаем пост из модели TagPost по слагу tag_slug
+    tag = get_object_or_404(TagPost, slug = tag_slug)
+    #берем все статьи кт связаны с этим тэгом
+    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED)
+    data = {
+        'title': f'Тэг: {tag.tag}',
+        'menu': menu,
+        'posts': posts,
+        'cat_selected': None,
+        }
+    return render(request, 'women/index.html', context=data)
 
 def addpage(request):
     return HttpResponse(f"Добавить статью")
