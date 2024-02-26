@@ -1,6 +1,21 @@
-
-
 {% extends 'base.html'%}
+
+{% block breadcrumbs %}
+<!--тэги-->
+{% with post.tags.all as tags %}
+{% if tags %}
+<ul class="tags-list">
+    <li>Тэги:</li>
+    {% for t in tags %}
+    <li><a href="{{t.get_absolute_url}}">{{t.tag}}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
+
+
 {% block content %}
 <h1> {{ post.title }}</h1>
 {% if post.photo %}
