@@ -14,7 +14,8 @@ menu = [
 
 # Create your views here.
 def index(request):
-    posts = Women.published.all()
+    # метод "select_related" жадная загрузка связанных по внешнему ключу даннных типа Foreign key()
+    posts = Women.published.all().select_related('cat')
     print(posts)
     data = {
         'title': 'главная страница',
@@ -39,8 +40,7 @@ def show_post(request, post_slug):
 
 def show_category(request, cat_slug):
     category = get_object_or_404(Category, slug = cat_slug)
-    posts = Women.published.filter(cat_id = category.pk)
-    print(posts)
+    posts = Women.published.filter(cat_id = category.pk).select_related('cat')
     data = {'title': f'Рубрика: {category.name}',
             'menu': menu,
             'posts': posts,
@@ -52,7 +52,7 @@ def show_tag_postlist(request, tag_slug):
     # прочитаем пост из модели TagPost по слагу tag_slug
     tag = get_object_or_404(TagPost, slug = tag_slug)
     #берем все статьи кт связаны с этим тэгом
-    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED)
+    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED).select_related('cat')
     data = {
         'title': f'Тэг: {tag.tag}',
         'menu': menu,
@@ -73,5 +73,3 @@ def login(request):
 def page_not_found(request, exception):
     return HttpResponseNotFound(f"<h1>Страница не найдена</h1>")
 
-
-# "C:\Users\vital\PycharmProjects\django\djvenv\Lib\site-packages\debug_toolbar\static\debug_toolbar"
