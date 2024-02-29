@@ -47,7 +47,6 @@ def show_category(request, cat_slug):
             'cat_selected': category.pk,
             }
     return render(request, 'women/index.html', context = data)
-    return render(request, 'women/index.html', context = data)
 
 def show_tag_postlist(request, tag_slug):
     # прочитаем пост из модели TagPost по слагу tag_slug
@@ -73,3 +72,6 @@ def login(request):
 
 def page_not_found(request, exception):
     return HttpResponseNotFound(f"<h1>Страница не найдена</h1>")
+
+
+# "C:\Users\vital\PycharmProjects\django\djvenv\Lib\site-packages\debug_toolbar\static\debug_toolbar"
