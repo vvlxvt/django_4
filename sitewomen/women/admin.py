@@ -25,7 +25,9 @@ class WomenAdmin(admin.ModelAdmin):
     # exclude = ['tags', 'is_published']
     # исключает ненужные поля из формы редактирования записей
     readonly_fields = ['slug']
-    # делает поле нередактируемым
+    # делает нередактируемым указанное поле
+    prepopulated_fields = {'slug': ('title',)}
+    # автомаnически формирует слаг на основе title, slug должен быть редактиремым
     list_display = ('title','time_create','cat','is_published', 'brief_info')
     # отображаем поля, которые будут видны в админке
     list_display_links = ('title',)
