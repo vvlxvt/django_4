@@ -62,7 +62,7 @@ def show_tag_postlist(request, tag_slug):
     return render(request, 'women/index.html', context=data)
 
 def addpage(request):
-    return HttpResponse(f"Добавить статью")
+    return render(request, 'women/addpage.html', {'menu': menu, 'title': 'Добавление статьи' })
 
 def contact(request):
     return HttpResponse(f"Обратная связь")
