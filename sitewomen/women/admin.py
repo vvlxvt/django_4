@@ -2,15 +2,19 @@ from django.contrib import admin, messages
 from .models import Women, Category
 
 class MarriedFilter(admin.SimpleListFilter):
+    # новый фильтр для админ панели
     title = 'Статус женщин'
+    # значение перемнной в запросе http://127.0.0.1:8000/admin/women/women/?status=single
     parameter_name = 'status'
 
     def lookups(self, request, model_admin):
+        # возвращает список возможных значений параметра status
         return [('married', 'замужем'),
         ('single', 'не замужем'),]
 
     def queryset(self, request, queryset):
         if self.value() == 'married':
+            # self.value() возвращает значение параметра status
             return queryset.filter(husband__isnull=False)
         elif self.value() == 'single':
             return queryset.filter(husband__isnull=True)
