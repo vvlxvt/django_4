@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
+
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -38,6 +40,11 @@ class Women(models.Model):
 
     def get_absolute_url(self):
         return reverse('post', kwargs = {'post_slug':self.slug})
+
+    def save(self, *args, **kwargs):
+        # определяем slug самостоятельно
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
 
 class Category(models.Model):

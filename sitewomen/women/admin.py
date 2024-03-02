@@ -20,20 +20,28 @@ class MarriedFilter(admin.SimpleListFilter):
             return queryset.filter(husband__isnull=True)
 @admin.register(Women)
 class WomenAdmin(admin.ModelAdmin):
-    # отображаем поля, которые будут видны в админке
+    fields = ['title', 'content', 'slug', 'cat']
+    # поля для изменения записей в форме редактирования
+    # exclude = ['tags', 'is_published']
+    # исключает ненужные поля из формы редактирования записей
+    readonly_fields = ['slug']
+    # делает поле нередактируемым
     list_display = ('title','time_create','cat','is_published', 'brief_info')
-    # указаваем поля кт будут кликабельны в админке
+    # отображаем поля, которые будут видны в админке
     list_display_links = ('title',)
-    # указаваем последовательность сортировки записей
+    # указаваем поля кт будут кликабельны в админке
     ordering = ('time_create','title')
-    # указаваем поля кт можно изменить, при этом они не должны тогда быть кликабельными
+    # указаваем последовательность сортировки записей
     list_editable = ('is_published',)
-    # пагинация списка записей (сколько показывать на странице)
+    # указаваем поля кт можно изменить, при этом они не должны тогда быть кликабельными
     list_per_page = 4
-    # добавляем новое действие
+    # пагинация списка записей (сколько показывать на странице)
     actions = ['set_published', 'set_draft']
+    # добавляем новое действие
     search_fields = ('title','cat__name',)
+    # поля для поиска
     list_filter = (MarriedFilter,'cat__name', 'is_published')
+    # список фильтров
 
     @admin.display(description='Краткое описание', ordering= 'content')
     # добавляем дополнительное поле к записям в админку
