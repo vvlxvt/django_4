@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{title}}</h1>
 <form action="" method="post">
-    {% csrf_token%}
+    {% csrf_token %}
     <!--csrf защита от межсайтовых аттак-->
     <!--это пребование джанго при всех POST запросах-->
     <p><label for="id_1"> Текст: </label><input type="text" id='id_1' name="filled_text"></p>
