@@ -70,7 +70,11 @@ def addpage(request):
         # проверяем корретность заполнения
         if form.is_valid():
             # если корректно то можем использовать данные по усмотрению
-            print(form.cleaned_data)
+            try:
+                Women.objects.create(**form.cleaned_data)
+                return redirect('home')
+            except:
+                form.add_error(None, "Ошибка добавления поста")
     else:
         # иначе пришел GET запрос и отображаем форму с пустыми данными
         form = AddPostForm()
