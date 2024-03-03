@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
+
+from .forms import AddPostForm
 from .models import Women, Category, TagPost
 
 menu = [
@@ -62,7 +64,23 @@ def show_tag_postlist(request, tag_slug):
     return render(request, 'women/index.html', context=data)
 
 def addpage(request):
-    return render(request, 'women/addpage.html', {'menu': menu, 'title': 'Добавление статьи' })
+    # функция представления проверяет заполнена ли форма
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        # проверяем корретность заполнения
+        if form.is_valid():
+            # если корректно то можем использовать данные по усмотрению
+            print(form.cleaned_data)
+    else:
+        # иначе пришел GET запрос и отображаем форму с пустыми данными
+        form = AddPostForm()
+
+    data = {
+        'menu': menu,
+        'title': 'Добавление статьи',
+        'form': form
+    }
+    return render(request, 'women/addpage.html', data)
 
 def contact(request):
     return HttpResponse(f"Обратная связь")
