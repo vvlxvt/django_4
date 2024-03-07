@@ -26,7 +26,7 @@ class AddPostForm(forms.Form):
     title = forms.CharField(max_length=255,
                             min_length=5,
                             label='Заголовок',
-                            validators=[RussianValidator()],
+                            # validators=[RussianValidator()],
                             widget=forms.TextInput(attrs={'class':'form-input'}),
                             error_messages={'min_length': 'слишком короткий заголовок',
                                             'required': 'без заголовка никак'})
@@ -37,3 +37,14 @@ class AddPostForm(forms.Form):
     cat = forms.ModelChoiceField(queryset=Category.objects.all(),label='Категория', empty_label='не указано')
     husband = forms.ModelChoiceField(queryset=Husband.objects.all(),
                                      required=False, label='Муж', empty_label='не замужем')
+
+    def clean_title(self):
+        # так можно прописать валидатор если он используется с одним полем
+        # получаем значение из словаря с ключом "title"
+        title = self.cleaned_data['title']
+        # указываем допустимые символы
+        ALLOWED_CHARS = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёдзийклмнопрстуфхцчшщъыьэюя0123456789-'
+        if not (set(title) <= set(ALLOWED_CHARS)):
+            raise ValidationError("Должны присутствовать только русские буквы, цифры")
+        return title
+
