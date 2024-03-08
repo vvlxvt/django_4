@@ -67,14 +67,10 @@ def addpage(request):
     # функция представления проверяет заполнена ли форма
     if request.method == 'POST':
         form = AddPostForm(request.POST)
-        # проверяем корретность заполнения
+        # проверяем корретность заполнения (например чтобы slug был уникальным )
         if form.is_valid():
-            # если корректно то можем использовать данные по усмотрению
-            try:
-                Women.objects.create(**form.cleaned_data)
-                return redirect('home')
-            except:
-                form.add_error(None, "Ошибка добавления поста")
+            form.save()
+            return redirect('home')
     else:
         # иначе пришел GET запрос и отображаем форму с пустыми данными
         form = AddPostForm()

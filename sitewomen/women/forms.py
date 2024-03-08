@@ -3,7 +3,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.utils.deconstruct import deconstructible
 
-from .models import Category, Husband
+from .models import Category, Husband, Women
+
 
 @deconstructible
 class RussianValidator:
@@ -20,23 +21,25 @@ class RussianValidator:
         if not (set(value) <= set(self.ALLOWED_CHARS)):
             raise ValidationError(self.message, code = self.code)
 
-class AddPostForm(forms.Form):
-    # класс для отображения формы редактирования записей
-    # required=False для необязательных к заполнению полей
-    title = forms.CharField(max_length=255,
-                            min_length=5,
-                            label='Заголовок',
-                            # validators=[RussianValidator()],
-                            widget=forms.TextInput(attrs={'class':'form-input'}),
-                            error_messages={'min_length': 'слишком короткий заголовок',
-                                            'required': 'без заголовка никак'})
-    slug = forms.SlugField(max_length=255, label='URL',
-                           validators=[MinLengthValidator(5), MaxLengthValidator(100)])
-    content = forms.CharField(widget=forms.Textarea(attrs={'cols':50, 'rows':5}), label='Содержание')
-    is_published = forms.BooleanField(label='Опубликовано', initial = True)
+class AddPostForm(forms.ModelForm):
+
     cat = forms.ModelChoiceField(queryset=Category.objects.all(),label='Категория', empty_label='не указано')
-    husband = forms.ModelChoiceField(queryset=Husband.objects.all(),
-                                     required=False, label='Муж', empty_label='не замужем')
+    husband = forms.ModelChoiceField(queryset=Husband.objects.all(), required=False, label='Муж', empty_label='не замужем')
+
+    class Meta:
+        model = Women
+        fields = ['title', 'slug', 'content', 'is_published', 'cat', 'husband','tags']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-input'}),
+            'content': forms. Textarea(attrs={'cols': 50, 'rows': 5})
+        }
+        labels = {'slug': 'URL'}
+
+
+
+
+
+
 
     def clean_title(self):
         # так можно прописать валидатор если он используется с одним полем
@@ -46,5 +49,7 @@ class AddPostForm(forms.Form):
         ALLOWED_CHARS = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёдзийклмнопрстуфхцчшщъыьэюя0123456789-'
         if not (set(title) <= set(ALLOWED_CHARS)):
             raise ValidationError("Должны присутствовать только русские буквы, цифры")
+        elif len(title)> 50:
+            raise ValidationError("Длина превышает 50 символов")
         return title
 
