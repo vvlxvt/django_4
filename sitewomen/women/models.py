@@ -14,6 +14,7 @@ class Women(models.Model):
     # verbose_name - подробное имя которое отоборажется в админке и других случая
     title = models.CharField(max_length=255, verbose_name='Заголовок')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="Слаг")
+    photo = models.ImageField(upload_to='photos/%Y/%m/%d/', default=None, blank=True, null=True, verbose_name='Фото')
     content = models.TextField(blank=True, verbose_name='Статья')
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="создано")
     time_update = models.DateTimeField(auto_now=True, verbose_name="изменено")
