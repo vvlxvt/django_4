@@ -78,7 +78,7 @@ def show_tag_postlist(request, tag_slug):
 def addpage(request):
     # функция представления проверяет заполнена ли форма
     if request.method == 'POST':
-        form = AddPostForm(request.POST)
+        form = AddPostForm(request.POST, request.FILES)
         # проверяем корретность заполнения (например чтобы slug был уникальным )
         if form.is_valid():
             form.save()
