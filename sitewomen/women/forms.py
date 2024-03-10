@@ -35,8 +35,20 @@ class AddPostForm(forms.ModelForm):
         }
         labels = {'slug': 'URL'}
 
+        def clean_title(self):
+            # так можно прописать валидатор если он используется с одним полем
+            # получаем значение из словаря с ключом "title"
+            title = self.cleaned_data['title']
+            # указываем допустимые символы
+            ALLOWED_CHARS = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёдзийклмнопрстуфхцчшщъыьэюя0123456789-'
+            if not (set(title) <= set(ALLOWED_CHARS)):
+                raise ValidationError("Должны присутствовать только русские буквы, цифры")
+            elif len(title) > 50:
+                raise ValidationError("Длина превышает 50 символов")
+            return title
+
 class UploadFileForm(forms.Form):
-    file = forms.FileField(label='Файл')
+    # file = forms.FileField(label='Файл')
     file = forms.ImageField(label='Файл')
 
 
@@ -46,15 +58,5 @@ class UploadFileForm(forms.Form):
 
 
 
-    def clean_title(self):
-        # так можно прописать валидатор если он используется с одним полем
-        # получаем значение из словаря с ключом "title"
-        title = self.cleaned_data['title']
-        # указываем допустимые символы
-        ALLOWED_CHARS = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёдзийклмнопрстуфхцчшщъыьэюя0123456789-'
-        if not (set(title) <= set(ALLOWED_CHARS)):
-            raise ValidationError("Должны присутствовать только русские буквы, цифры")
-        elif len(title)> 50:
-            raise ValidationError("Длина превышает 50 символов")
-        return title
+
 
