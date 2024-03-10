@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.utils.safestring import mark_safe
 from .models import Women, Category
 
 class MarriedFilter(admin.SimpleListFilter):
@@ -20,15 +21,15 @@ class MarriedFilter(admin.SimpleListFilter):
             return queryset.filter(husband__isnull=True)
 @admin.register(Women)
 class WomenAdmin(admin.ModelAdmin):
-    fields = ['title', 'content', 'slug', 'cat']
+    fields = ['title', 'content','photo','post_photo', 'slug', 'cat']
     # поля для изменения записей в форме редактирования
     # exclude = ['tags', 'is_published']
     # исключает ненужные поля из формы редактирования записей
-    # readonly_fields = ['slug']
+    readonly_fields = ['post_photo']
     # делает нередактируемым указанное поле
     prepopulated_fields = {'slug': ('title',)}
     # автомаnически формирует слаг на основе title, slug должен быть редактиремым
-    list_display = ('title','time_create','cat','is_published', 'brief_info')
+    list_display = ('title','post_photo','time_create','cat','is_published')
     # отображаем поля, которые будут видны в админке
     list_display_links = ('title',)
     # указаваем поля кт будут кликабельны в админке
@@ -44,11 +45,21 @@ class WomenAdmin(admin.ModelAdmin):
     # поля для поиска
     list_filter = (MarriedFilter,'cat__name', 'is_published')
     # список фильтров
+    save_on_top = True
+    # дублирование панели "сохранить" сверху для удобства
 
-    @admin.display(description='Краткое описание', ordering= 'content')
+    # @admin.display(description='Краткое описание', ordering= 'content')
+    # # добавляем дополнительное поле к записям в админку
+    # def brief_info(self, women: Women):
+    #     return f'Описание {len(women.content)} символов'
+
+    @admin.display(description='изображение', ordering='content')
     # добавляем дополнительное поле к записям в админку
-    def brief_info(self, women: Women):
-        return f'Описание {len(women.content)} символов'
+    def post_photo(self, women: Women):
+        # mark_safe, чтобы html тэги не экранировались
+        if women.photo:
+            return mark_safe(f'<img src="{women.photo.url}" width=50 >')
+        return "без фото"
 
     @admin.action(description='Опубликовать выбранные записи')
     # добавляем действие к выбранным записям в админку

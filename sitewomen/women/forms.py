@@ -22,7 +22,6 @@ class RussianValidator:
             raise ValidationError(self.message, code = self.code)
 
 class AddPostForm(forms.ModelForm):
-
     cat = forms.ModelChoiceField(queryset=Category.objects.all(),label='Категория', empty_label='не указано')
     husband = forms.ModelChoiceField(queryset=Husband.objects.all(), required=False, label='Муж', empty_label='не замужем')
 
