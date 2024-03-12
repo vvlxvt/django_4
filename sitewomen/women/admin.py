@@ -37,7 +37,7 @@ class WomenAdmin(admin.ModelAdmin):
     # указаваем последовательность сортировки записей
     list_editable = ('is_published',)
     # указаваем поля кт можно изменить, при этом они не должны тогда быть кликабельными
-    list_per_page = 4
+    list_per_page = 10
     # пагинация списка записей (сколько показывать на странице)
     actions = ['set_published', 'set_draft']
     # добавляем новое действие
@@ -82,3 +82,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
 # admin.site.register(Women, WomenAdmin)
 # Register your models here.
+
+# 1078829
+# VHR941Mx

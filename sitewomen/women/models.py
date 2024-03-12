@@ -30,7 +30,7 @@ class Women(models.Model):
     published = PublishedManager()
 
     def __str__(self):
-        return self.title
+        return f'{self.title}-{self.tags}'
 
     class Meta:
         verbose_name = 'Известные женщины'
