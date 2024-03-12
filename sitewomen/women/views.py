@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
+from django.views import View
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -75,24 +76,25 @@ def show_tag_postlist(request, tag_slug):
         }
     return render(request, 'women/index.html', context=data)
 
-def addpage(request):
-    # функция представления проверяет заполнена ли форма
-    if request.method == 'POST':
+class AddPage(View):
+    def get(self, request):
+        form = AddPostForm()
+        data = {'menu': menu, 'title': 'Добавление статьи', 'form': form}
+        return render(request, 'women/addpage.html', data)
+
+    def post(self, request):
         form = AddPostForm(request.POST, request.FILES)
-        # проверяем корретность заполнения (например чтобы slug был уникальным )
         if form.is_valid():
             form.save()
             return redirect('home')
-    else:
-        # иначе пришел GET запрос и отображаем форму с пустыми данными
-        form = AddPostForm()
-
-    data = {
+        data = {
         'menu': menu,
         'title': 'Добавление статьи',
         'form': form
-    }
-    return render(request, 'women/addpage.html', data)
+          }
+        return render(request, 'women/addpage.html', data)
+
+
 
 def contact(request):
     return HttpResponse(f"Обратная связь")
