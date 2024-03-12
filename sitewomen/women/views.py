@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
+from django.views.generic import TemplateView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -15,23 +16,23 @@ menu = [
     {'title': "Войти", 'url_name': 'login'}
 ]
 
-# Create your views here.
-def index(request):
-    # метод "select_related" жадная загрузка связанных по внешнему ключу даннных типа Foreign key()
-    posts = Women.published.all().select_related('cat')
-    print(posts)
-    data = {
+class WomenHome(TemplateView):
+    template_name = 'women/index.html'
+    extra_context = {
+        # этот словарь для статических данных
         'title': 'главная страница',
         'menu': menu,
-        'posts': posts,
+        'posts': Women.published.all().select_related('cat'), # получение всех записей из модели Women
         'cat_selected': 0,
         }
-    return render(request, 'women/index.html', context = data)
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['title'] = 'главная страница',
+    #     context['menu'] = menu,
+    #     context['posts'] = Women.published.all().select_related('cat'),  # получение всех записей из модели Women
+    #     context['cat_selected'] = int(self.request.GET.get('cat_id',0))
+    #     return context
 
-# def handle_uploaded_file(f):
-#     with open(f'uploads/{f.name}','wb+') as destination:
-#         for chunk in f.chunks():
-#             destination.write(chunk)
 
 def about(request):
     if request.method == 'POST':
