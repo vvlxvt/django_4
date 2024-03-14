@@ -80,6 +80,12 @@ class ShowPost(DetailView):
     # переменная которая фигурирует в маршруте
     context_object_name = 'post'
     # присваеиваем переменной контекста object ранее использованное в post.html имя post
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['post'].title
+        context['menu'] = menu
+        return context
+
 
 # def show_category(request, cat_slug):
 #     category = get_object_or_404(Category, slug = cat_slug)
