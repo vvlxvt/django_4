@@ -4,7 +4,7 @@ from django.urls import reverse, reverse_lazy
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, FormView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -148,19 +148,19 @@ class ShowTagPost(ListView):
     def get_queryset(self):
         return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
 
-class AddPage(FormView):
+class AddPage(CreateView):
     # класс для добавления записей в БД, наследован от базового FormView
     form_class = AddPostForm
     template_name = 'women/addpage.html'
-    success_url = reverse_lazy('home')
+    # success_url = reverse_lazy('home')
     # перенаправляет на ук. страницу при успехе заполнения
     extra_context = {'menu': menu, 'title': 'Добавление статьи'}
 
-    def form_valid(self, form):
-        # метод вызывается все поля формы были заполнены корректно
-        form.save()
-        # в шаблоне addpage.html используется переменная form
-        return super().form_valid(form)
+    # def form_valid(self, form):
+    #     # метод вызывается все поля формы были заполнены корректно
+    #     form.save()
+    #     # в шаблоне addpage.html используется переменная form
+    #     return super().form_valid(form)
 
 # class AddPage(View):
 #     def get(self, request):
