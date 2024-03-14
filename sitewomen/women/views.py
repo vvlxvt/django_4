@@ -4,7 +4,7 @@ from django.urls import reverse, reverse_lazy
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -151,6 +151,8 @@ class ShowTagPost(ListView):
 class AddPage(CreateView):
     # класс для добавления записей в БД, наследован от базового FormView
     form_class = AddPostForm
+    # model = Women
+    # fields = '__all__'
     template_name = 'women/addpage.html'
     # success_url = reverse_lazy('home') # если не указать, то при успехе добавления перенаправляет по методу
     # get_absolute_url из модели Women
@@ -163,25 +165,15 @@ class AddPage(CreateView):
     #     # в шаблоне addpage.html используется переменная form
     #     return super().form_valid(form)
 
-# class AddPage(View):
-#     def get(self, request):
-#         form = AddPostForm()
-#         data = {'menu': menu, 'title': 'Добавление статьи', 'form': form}
-#         return render(request, 'women/addpage.html', data)
-#
-#     def post(self, request):
-#         form = AddPostForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('home')
-#         data = {
-#         'menu': menu,
-#         'title': 'Добавление статьи',
-#         'form': form
-#           }
-#         return render(request, 'women/addpage.html', data)
-
-
+class UpdatePage(UpdateView):
+    model = Women
+    fields = ['title', 'content', 'photo','is_published','cat']
+    template_name = 'women/addpage.html'
+    success_url = reverse_lazy('home')
+    extra_context = {
+        'menu': menu,
+        'title': 'Редактирование статьи'
+    }
 
 def contact(request):
     return HttpResponse(f"Обратная связь")
