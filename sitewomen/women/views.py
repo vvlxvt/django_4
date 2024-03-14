@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -72,6 +72,14 @@ def show_post(request, post_slug):
         'cat_selected': 1,
         }
     return render(request, 'women/post.html', data)
+
+class ShowPost(DetailView):
+    model = Women
+    template_name = 'women/post.html'
+    slug_url_kwarg = 'post_slug'
+    # переменная которая фигурирует в маршруте
+    context_object_name = 'post'
+    # присваеиваем переменной контекста object ранее использованное в post.html имя post
 
 # def show_category(request, cat_slug):
 #     category = get_object_or_404(Category, slug = cat_slug)
