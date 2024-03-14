@@ -152,7 +152,8 @@ class AddPage(CreateView):
     # класс для добавления записей в БД, наследован от базового FormView
     form_class = AddPostForm
     template_name = 'women/addpage.html'
-    # success_url = reverse_lazy('home')
+    # success_url = reverse_lazy('home') # если не указать, то при успехе добавления перенаправляет по методу
+    # get_absolute_url из модели Women
     # перенаправляет на ук. страницу при успехе заполнения
     extra_context = {'menu': menu, 'title': 'Добавление статьи'}
 
