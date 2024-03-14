@@ -23,6 +23,7 @@ class Women(models.Model):
     default=Status.DRAFT, verbose_name="Статус")
     cat = models.ForeignKey('Category', on_delete = models.PROTECT, related_name='posts',verbose_name="Категория")
     tags = models.ManyToManyField('TagPost', blank=True, related_name='tags', verbose_name="Тэг")
+    # related_name - менеджеор обратного связывания
     husband = models.OneToOneField('Husband', on_delete=models.SET_NULL, null=True, blank=True,  related_name =
     'wife', verbose_name="Муж")
 
@@ -30,7 +31,7 @@ class Women(models.Model):
     published = PublishedManager()
 
     def __str__(self):
-        return f'{self.title}-{self.tags}'
+        return f'{self.title}'
 
     class Meta:
         verbose_name = 'Известные женщины'

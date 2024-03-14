@@ -90,17 +90,17 @@ class WomenCategory(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(context)
         cat = context['posts'][0].cat
-        print(cat)
         context['title'] = 'Категория - ' + cat.name
         context['menu'] = menu
         context['cat_selected'] = cat.pk
         return context
 
     def get_queryset(self):
-        return Women.published.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
-
-
+        result = Women.published.filter(cat__slug=self.kwargs['cat_slug']).select_related('cat')
+        print(result)
+        return result
 
 def show_tag_postlist(request, tag_slug):
     # прочитаем пост из модели TagPost по слагу tag_slug
@@ -114,6 +114,25 @@ def show_tag_postlist(request, tag_slug):
         'cat_selected': None,
         }
     return render(request, 'women/index.html', context=data)
+
+class ShowTagPost(ListView):
+    template_name = 'women/index.html'
+    context_object_name = 'posts'
+    allow_empty = False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tag = TagPost.objects.get(slug = self.kwargs['tag_slug'])
+        print(tag)
+        context['title'] = 'Тэг - ' + tag.tag
+        context['menu'] = menu
+        context['cat_selected'] = None
+        return context
+
+    def get_queryset(self):
+        return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
+
+
 
 class AddPage(View):
     def get(self, request):
