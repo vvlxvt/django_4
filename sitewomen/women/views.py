@@ -1,10 +1,10 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -75,16 +75,18 @@ def show_post(request, post_slug):
 
 class ShowPost(DetailView):
     model = Women
-    template_name = 'women/post.html'
-    slug_url_kwarg = 'post_slug'
-    # переменная которая фигурирует в маршруте
-    context_object_name = 'post'
+    template_name = 'women/post.html' # имя вашего шаблона
+    slug_url_kwarg = 'post_slug'   # переменная которая фигурирует в маршруте
+    context_object_name = 'post' #  имя объекта в контексте шаблона
     # присваеиваем переменной контекста object ранее использованное в post.html имя post
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = context['post'].title
         context['menu'] = menu
         return context
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Women.published, slug = self.kwargs[self.slug_url_kwarg])
 
 
 # def show_category(request, cat_slug):
@@ -146,25 +148,37 @@ class ShowTagPost(ListView):
     def get_queryset(self):
         return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
 
+class AddPage(FormView):
+    # класс для добавления записей в БД, наследован от базового FormView
+    form_class = AddPostForm
+    template_name = 'women/addpage.html'
+    success_url = reverse_lazy('home')
+    # перенаправляет на ук. страницу при успехе заполнения
+    extra_context = {'menu': menu, 'title': 'Добавление статьи'}
 
+    def form_valid(self, form):
+        # метод вызывается все поля формы были заполнены корректно
+        form.save()
+        # в шаблоне addpage.html используется переменная form
+        return super().form_valid(form)
 
-class AddPage(View):
-    def get(self, request):
-        form = AddPostForm()
-        data = {'menu': menu, 'title': 'Добавление статьи', 'form': form}
-        return render(request, 'women/addpage.html', data)
-
-    def post(self, request):
-        form = AddPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-        data = {
-        'menu': menu,
-        'title': 'Добавление статьи',
-        'form': form
-          }
-        return render(request, 'women/addpage.html', data)
+# class AddPage(View):
+#     def get(self, request):
+#         form = AddPostForm()
+#         data = {'menu': menu, 'title': 'Добавление статьи', 'form': form}
+#         return render(request, 'women/addpage.html', data)
+#
+#     def post(self, request):
+#         form = AddPostForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#         data = {
+#         'menu': menu,
+#         'title': 'Добавление статьи',
+#         'form': form
+#           }
+#         return render(request, 'women/addpage.html', data)
 
 
 
