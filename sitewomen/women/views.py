@@ -27,18 +27,14 @@ menu = [
 #     }
 #     return render(request, 'women/index.html', context=data)
 
-class WomenHome(ListView):
+class WomenHome(DataMixin, ListView):
     # предполагает получыение данных из таблицы
     template_name = 'women/index.html'
+    title_page = 'Главная страница'
+    cat_selected = 0
     model = Women
     context_object_name = 'posts'
     # определяем переменную  кт будет содержать список статей
-    extra_context = {
-        # этот словарь для статических данных
-        'title': 'главная страница',
-        'menu': menu,
-        'cat_selected': 0,
-        }
 
     def get_queryset(self):
         return Women.published.all().select_related('cat')
