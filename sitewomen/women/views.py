@@ -4,7 +4,7 @@ from django.urls import reverse, reverse_lazy
 from django.template.loader import render_to_string
 from django.template.defaultfilters import slugify
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView
+from django.views.generic import TemplateView, ListView, DetailView, FormView, CreateView, UpdateView, DeleteView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -106,7 +106,6 @@ class WomenCategory(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context)
         cat = context['posts'][0].cat
         context['title'] = 'Категория - ' + cat.name
         context['menu'] = menu
@@ -139,7 +138,6 @@ class ShowTagPost(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tag = TagPost.objects.get(slug = self.kwargs['tag_slug'])
-        print(tag)
         context['title'] = 'Тэг - ' + tag.tag
         context['menu'] = menu
         context['cat_selected'] = None
@@ -174,6 +172,21 @@ class UpdatePage(UpdateView):
         'menu': menu,
         'title': 'Редактирование статьи'
     }
+
+class DeletePage(DeleteView):
+    model = Women
+    template_name = 'women/post_confirm_delete.html'
+    context_object_name = 'post'
+    success_url = reverse_lazy('home')
+    template_name_suffix = "_confirm_delete"
+    pk_url_kwarg = 'pk'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = context['post'].title
+        return context
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Women.published, pk = self.kwargs[self.pk_url_kwarg])
 
 def contact(request):
     return HttpResponse(f"Обратная связь")
