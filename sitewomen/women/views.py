@@ -8,8 +8,7 @@ from django.views.generic import TemplateView, ListView, DetailView, FormView, C
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
-
-
+from .utils import DataMixin
 
 menu = [
     {'title': 'О сайте', 'url_name': "about"},
@@ -73,17 +72,14 @@ def show_post(request, post_slug):
         }
     return render(request, 'women/post.html', data)
 
-class ShowPost(DetailView):
-    model = Women
+class ShowPost(DataMixin,DetailView):
     template_name = 'women/post.html' # имя вашего шаблона
     slug_url_kwarg = 'post_slug'   # переменная которая фигурирует в маршруте
     context_object_name = 'post' #  имя объекта в контексте шаблона
     # присваеиваем переменной контекста object ранее использованное в post.html имя post
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = context['post'].title
-        context['menu'] = menu
-        return context
+        return self.get_mixin_context(context, title = context['post'].title)
 
     def get_object(self, queryset=None):
         return get_object_or_404(Women.published, slug = self.kwargs[self.slug_url_kwarg])
