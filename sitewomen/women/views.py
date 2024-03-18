@@ -12,6 +12,7 @@ class WomenHome(DataMixin, ListView):
     # предполагает получыение данных из таблицы
     template_name = 'women/index.html'
     title_page = 'Главная страница'
+    paginate_by = 3
     cat_selected = 0
     model = Women
     context_object_name = 'posts'
@@ -22,7 +23,7 @@ class WomenHome(DataMixin, ListView):
 
 def about(request):
     contact_list=Women.published.all()
-    paginator = Paginator(contact_list,3)
+    paginator = Paginator(contact_list,3) # класс Paginator содержащий список опубликованных объектов с просмотром по 3
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'women/about.html', {'title':'О сайте', 'page_obj': page_obj})
