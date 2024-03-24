@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
@@ -21,6 +23,7 @@ class WomenHome(DataMixin, ListView):
     def get_queryset(self):
         return Women.published.all().select_related('cat')
 
+@login_required(login_url = '/admin/')
 def about(request):
     contact_list=Women.published.all()
     paginator = Paginator(contact_list,3) # класс Paginator содержащий список опубликованных объектов с просмотром по 3
@@ -72,7 +75,7 @@ class TagPostList(DataMixin, ListView):
     def get_queryset(self):
         return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
 
-class AddPage(DataMixin, CreateView):
+class AddPage(DataMixin, LoginRequiredMixin, CreateView):
     form_class = AddPostForm
     template_name = 'women/addpage.html'
     title_page = 'Добавление статьи'
