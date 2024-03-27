@@ -82,7 +82,7 @@ class AddPage(DataMixin, LoginRequiredMixin, CreateView):
     # login_url = '/admin/' # адрес перенаправления неавторизованого пользователя
 
     def form_valid(self, form):
-        w=form.save(commit=False)
+        w=form.save(commit=False) # объект будет сохранен в базу данных только после того, как вызовем метод save()
         w.author = self.request.user
         return super().form_valid(form)
 
