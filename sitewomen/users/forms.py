@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 
 class LoginUserForm(AuthenticationForm):
@@ -13,24 +13,29 @@ class LoginUserForm(AuthenticationForm):
         model = get_user_model() # привязка к стандартной модели пользователя
         fields = ['username','password'] # указывает поля для отображения в форме
 
-class RegisterUserForm(forms.ModelForm):
+class RegisterUserForm(UserCreationForm):
     username = forms.CharField(label='Логин')
-    password = forms.CharField(label='Пароль',widget=forms.PasswordInput())
+    password1 = forms.CharField(label='Пароль',widget=forms.PasswordInput())
     password2 = forms.CharField(label='Повтор пароля',widget=forms.PasswordInput())
 
     class Meta:
         model= get_user_model()
-        fields = ['username', 'email','first_name','last_name','password','password2',]
+        fields = ['username', 'email','first_name','last_name','password1','password2',]
         labels = {
             'email': 'E-mail',
             'first_name': 'Имя',
             'last_name': 'Фамилия'
         }
-    def clean_password2(self):
-        cd = self.cleaned_data
-        if cd['password'] != cd['password2']:
-            raise forms.ValidationError('Пароли не совпадают')
-        return cd['password']
+        widgets = {
+                   'email': forms.TextInput(attrs={'class': 'form-input'}),
+                   'first_name': forms.TextInput(attrs={'class': 'form-input'}),
+                   'last_name': forms.TextInput(attrs={'class': 'form-input'}),
+        }
+    # def clean_password2(self):
+    #     cd = self.cleaned_data
+    #     if cd['password'] != cd['password2']:
+    #         raise forms.ValidationError('Пароли не совпадают')
+    #     return cd['password']
 
     def clean_email(self):
         email = self.cleaned_data['email']
