@@ -156,7 +156,7 @@ EMAIL_ADMIN = EMAIL_HOST_USER
 
 AUTH_USER_MODEL = 'users.User' # приложение.Mодель
 
+DEFAULT_USER_IMAGE = MEDIA_URL + 'users/default.png' # MEDIA_URL это sitewomen/media
 
 
-
-#superuser password = X160YO
+#superuser 'root', password = 'X160YO'

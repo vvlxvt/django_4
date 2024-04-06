@@ -27,7 +27,8 @@ class Women(models.Model):
     # related_name - менеджеор обратного связывания
     husband = models.OneToOneField('Husband', on_delete=models.SET_NULL, null=True, blank=True,  related_name =
     'wife', verbose_name="Муж")
-    author = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, related_name='posts', null=True, default=None )
+    author = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, related_name='posts', null=True,
+                                default=None )
 
     objects = models.Manager()
     published = PublishedManager()

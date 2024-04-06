@@ -4,8 +4,13 @@
 
 <h1> Профиль </h1>
 
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    {% if user.photo %}
+    <p><img src="{{user.photo.url}}" width="200" height="250">
+    {% else %}
+    <p><img src=" {{default_image}} ">
+    {% endif %}
     <input type="hidden" name = "next" value = {{ next }}>
     <div class="form-error">{{ form.non_field_errors }}</div>
     {% for f in form %}
