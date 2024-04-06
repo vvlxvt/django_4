@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound
@@ -111,6 +111,7 @@ class DeletePage(DeleteView):
     def get_object(self, queryset=None):
         return get_object_or_404(Women.published, pk = self.kwargs[self.pk_url_kwarg])
 
+@permission_required('perm=women.view_women', raise_exception=True)
 def contact(request):
     return HttpResponse(f"Обратная связь")
 
