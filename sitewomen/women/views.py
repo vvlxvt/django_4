@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect, get_object_or_404
@@ -75,11 +75,12 @@ class TagPostList(DataMixin, ListView):
     def get_queryset(self):
         return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
 
-class AddPage(DataMixin, LoginRequiredMixin, CreateView):
+class AddPage(PermissionRequiredMixin, DataMixin, LoginRequiredMixin, CreateView):
     form_class = AddPostForm
     template_name = 'women/addpage.html'
     title_page = 'Добавление статьи'
     # login_url = '/admin/' # адрес перенаправления неавторизованого пользователя
+    permission_required = 'women.add_women' # разрешение для доступа к странице приложение.add_таблица
 
     def form_valid(self, form):
         w=form.save(commit=False) # объект будет сохранен в базу данных только после того, как вызовем метод save()
