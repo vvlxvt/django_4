@@ -1,5 +1,4 @@
 import io
-
 from rest_framework import serializers
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
@@ -14,7 +13,13 @@ from .models import Women
 
 class WomenSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
+    slug = serializers.CharField(max_length=100)
     content = serializers.CharField()
+    time_create = serializers.DateTimeField(read_only=True)
+    time_update = serializers.DateTimeField(read_only=True)
+    is_published = serializers.BooleanField(default=True)
+    cat_id = serializers.IntegerField() # в сериализаторе опеределяется конекретно как целое число а не как внешний ключ
+    author_id = serializers.IntegerField()
 
 # def encode():
 #     model = WomenModel('Sher', 'Content: Sher')

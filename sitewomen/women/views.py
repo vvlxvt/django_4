@@ -132,17 +132,21 @@ def page_not_found(request, exception):
 #     serializer_class = WomenSerializer
 class WomenAPIView(APIView):
     def get(self, request):
-        lst = Women.objects.all().values()
-        return Response({'post': list(lst)})
+        w = Women.objects.all()
+        return Response({'post': WomenSerializer(w, many=True).data})
+        # many значит что сериализатор будет работывать список а не одну запись
+        # Response преобразует в байтовую json-строку
 
     def post(self, request):
+        serializer = WomenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         new_post = Women.objects.create(
             title = request.data['title'],
             slug = request.data['slug'],
             cat_id = request.data['cat_id'],
             author_id=request.data['author_id']
         )
-        return Response({'post': model_to_dict(new_post)})
+        return Response({'post': WomenSerializer(new_post).data})
 
 
 
