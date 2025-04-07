@@ -95,6 +95,7 @@ class AddPage(PermissionRequiredMixin, DataMixin, LoginRequiredMixin, CreateView
 
 
 class UpdatePage(DataMixin, UpdateView):
+    model = Women
     title_page = 'Редактирование статьи'
     fields = ['title', 'content', 'photo','is_published','cat']
     template_name = 'women/addpage.html'
@@ -138,9 +139,8 @@ class WomenAPIView(APIView):
         new_post = Women.objects.create(
             title = request.data['title'],
             slug = request.data['slug'],
-            author = request.data['author'],
-            content = request.data['content'],
-            cat = request.data['cat']
+            cat_id = request.data['cat_id'],
+            author_id=request.data['author_id']
         )
         return Response({'post': model_to_dict(new_post)})
 

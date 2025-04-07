@@ -2,7 +2,7 @@
 
 {% block breadcrumbs %}
 {% if perms.women.change_women %}
-<p><a href="{% url 'edit_page' post.slug %}">Редактировать</a></p>
+<p><a href="{% url 'edit_page' post.pk %}">Редактировать</a></p>
 {% else %}
 {% endif %}
 <!--тэги-->
