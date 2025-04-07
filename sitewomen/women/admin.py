@@ -65,7 +65,7 @@ class WomenAdmin(admin.ModelAdmin):
     # добавляем действие к выбранным записям в админку
     def set_published(self, request, queryset):
         count = queryset.update(is_published = Women.Status.PUBLISHED)
-        self.message_user(request, f'Изменено {count} записей')    \
+        self.message_user(request, f'Изменено {count} записей')
 
     @admin.action(description='Снять с публикации выбранные записи')
     def set_draft(self, request, queryset):

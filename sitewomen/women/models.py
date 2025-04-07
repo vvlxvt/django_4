@@ -30,7 +30,7 @@ class Women(models.Model):
     author = models.ForeignKey(get_user_model(), on_delete = models.SET_NULL, related_name='posts', null=True,
                                 default=None )
 
-    objects = models.Manager()
+    objects = models.Manager() # определяю модельные менеджеры
     published = PublishedManager()
 
     def __str__(self):

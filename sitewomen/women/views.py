@@ -1,13 +1,18 @@
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
+from django.forms import model_to_dict
 from django.http import HttpResponse, HttpResponseNotFound
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .forms import AddPostForm, UploadFileForm
-from .models import Women, Category, TagPost, UploadFiles
+from .serializers import WomenSerializer
+from .forms import AddPostForm
+from .models import Women, TagPost
 from .utils import DataMixin
 
 class WomenHome(DataMixin, ListView):
@@ -120,4 +125,26 @@ def login(request):
 
 def page_not_found(request, exception):
     return HttpResponseNotFound(f"<h1>Страница не найдена</h1>")
+
+# class WomenAPIView(generics.ListAPIView):
+#     queryset = Women.objects.all()
+#     serializer_class = WomenSerializer
+class WomenAPIView(APIView):
+    def get(self, request):
+        lst = Women.objects.all().values()
+        return Response({'post': list(lst)})
+
+    def post(self, request):
+        new_post = Women.objects.create(
+            title = request.data['title'],
+            slug = request.data['slug'],
+            author = request.data['author'],
+            content = request.data['content'],
+            cat = request.data['cat']
+        )
+        return Response({'post': model_to_dict(new_post)})
+
+
+
+
 
