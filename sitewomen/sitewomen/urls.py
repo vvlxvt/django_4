@@ -3,11 +3,12 @@ from django.contrib import admin
 from django.urls import path, include
 
 from sitewomen import settings
-from women.views import page_not_found, WomenAPIView
+from women.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/womenlist/', WomenAPIView.as_view()),
+    path('api/v1/womenlist/', WomenAPIList.as_view()),
+    path('api/v1/womenlist/<int:pk>/', WomenAPIList.as_view()),
     path('', include('women.urls')),
     path('users/', include(('users.urls', 'users'), namespace='users')),
     path("__debug__/", include("debug_toolbar.urls")),
