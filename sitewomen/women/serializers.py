@@ -11,6 +11,7 @@ class WomenSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+
     '''
 class WomenSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=255)
