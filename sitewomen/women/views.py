@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -127,22 +127,27 @@ def login(request):
 def page_not_found(request, exception):
     return HttpResponseNotFound(f"<h1>Страница не найдена</h1>")
 
+
+class WomenViewSet(viewsets.ModelViewSet):
+    queryset = Women.objects.all()
+    serializer_class = WomenSerializer
+
 # class WomenAPIView(generics.ListAPIView):
 #     queryset = Women.objects.all()
 #     serializer_class = WomenSerializer
 
 
-class WomenAPIList(generics.ListCreateAPIView):
-    queryset = Women.objects.all()
-    serializer_class = WomenSerializer
-
-class WomenAPIUpdate(generics.UpdateAPIView):
-    queryset = Women.objects.all()
-    serializer_class = WomenSerializer
-
-class WomenAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Women.objects.all()
-    serializer_class = WomenSerializer
+# class WomenAPIList(generics.ListCreateAPIView):
+#     queryset = Women.objects.all()
+#     serializer_class = WomenSerializer
+#
+# class WomenAPIUpdate(generics.UpdateAPIView):
+#     queryset = Women.objects.all()
+#     serializer_class = WomenSerializer
+#
+# class WomenAPIDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Women.objects.all()
+#     serializer_class = WomenSerializer
 
 # class WomenAPIView(APIView):
 #     def get(self, request):
