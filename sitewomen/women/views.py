@@ -6,13 +6,15 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, mixins
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import GenericViewSet
 
 from .serializers import WomenSerializer
 from .forms import AddPostForm
-from .models import Women, TagPost
+from .models import Women, TagPost, Category
 from .utils import DataMixin
 
 class WomenHome(DataMixin, ListView):
@@ -128,9 +130,26 @@ def page_not_found(request, exception):
     return HttpResponseNotFound(f"<h1>Страница не найдена</h1>")
 
 
-class WomenViewSet(viewsets.ModelViewSet):
-    queryset = Women.objects.all()
+class WomenViewSet(mixins.CreateModelMixin,
+                   mixins.RetrieveModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.ListModelMixin,
+                   GenericViewSet):
+    queryset = Women.objects.all() # если отсутствует queryset то basename в router обязательно
     serializer_class = WomenSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get('pk')
+        if not pk:
+            return Women.objects.all()[:3]
+        return Women.objects.filter(pk=pk)
+
+    @action(methods=['get'], detail=True) #список записей, если одна-true
+    def category(self, request, pk=None):
+        cats = Category.objects.get(pk=pk)
+        # return Response({'cats':[c.name for c in cats]})
+        return Response({'cats':cats.name})
+
 
 # class WomenAPIView(generics.ListAPIView):
 #     queryset = Women.objects.all()
