@@ -6,6 +6,8 @@ from rest_framework.renderers import JSONRenderer
 from .models import Women
 
 class WomenSerializer(serializers.ModelSerializer):
+    author = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    # скрываю выбор текущего пользователя, тк он становится автоматически автором
     class Meta:
         model = Women
         fields = '__all__'

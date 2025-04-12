@@ -111,9 +111,17 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     # Аутентификация
-    'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer',
-    'rest_framework.renderers.BrowsableAPIRenderer',  # можно отключить в продакшене
-    ],}
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',  # можно отключить в продакшене
+    ],
+    # Глобальные разрешения
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.AllowAny',
+    ],
+}
 
 
 
