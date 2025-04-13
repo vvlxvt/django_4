@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'users',
     'debug_toolbar',
     'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -108,7 +110,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 REST_FRAMEWORK = {
     # Аутентификация
     'DEFAULT_RENDERER_CLASSES': [
@@ -121,7 +122,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAdminUser',
         'rest_framework.permissions.AllowAny',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',],
 }
+
 
 
 
